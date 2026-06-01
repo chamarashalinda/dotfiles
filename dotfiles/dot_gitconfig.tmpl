@@ -1,0 +1,65 @@
+[user]
+    name       = {{ output "git" "config" "--global" "user.name" | trim }}
+    email      = {{ output "git" "config" "--global" "user.email" | trim }}
+{{- $key := output "sh" "-c" "git config --global user.signingkey 2>/dev/null || true" | trim }}
+{{- if $key }}
+    signingkey = {{ $key }}
+{{- end }}
+
+[core]
+    editor          = nvim
+    autocrlf        = input
+    pager           = delta
+    excludesfile    = ~/.gitignore_global
+
+[pull]
+    rebase = true
+
+[push]
+    default         = current
+    autoSetupRemote = true
+
+[fetch]
+    prune = true
+
+[init]
+    defaultBranch = main
+
+[commit]
+{{- $gpgsign := output "sh" "-c" "git config --global commit.gpgsign 2>/dev/null || true" | trim }}
+    gpgsign = {{ if $gpgsign }}{{ $gpgsign }}{{ else }}false{{ end }}
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[delta]
+    navigate    = true
+    side-by-side = true
+    line-numbers = true
+
+[interactive]
+    diffFilter = delta --color-only
+
+[alias]
+    st    = status -sb
+    lg    = log --oneline --decorate --graph --all
+    undo  = reset HEAD~1 --mixed
+    wip   = commit -am "wip"
+    co    = checkout
+    br    = branch
+    sw    = switch
+    cp    = cherry-pick
+    last  = log -1 HEAD
+    unstage = reset HEAD --
+
+[includeIf "gitdir:~/work/"]
+    path = ~/.gitconfig-work
+
+[includeIf "gitdir:~/personal/"]
+    path = ~/.gitconfig-personal
+
+[url "git@github.com:"]
+    insteadOf = https://github.com/

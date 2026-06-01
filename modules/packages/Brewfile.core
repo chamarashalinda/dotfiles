@@ -1,0 +1,44 @@
+# Brewfile.core — Essential CLI tools for all profiles
+# Used by: modules/packages/install.sh
+
+# Shell & navigation
+brew "zsh"
+brew "tmux"
+brew "fzf"
+brew "zoxide"
+brew "direnv"
+
+# Modern unix replacements
+brew "bat"
+brew "eza"
+brew "fd"
+brew "ripgrep"
+brew "sd"
+brew "delta"
+
+# File & data tools
+brew "jq"
+brew "yq"
+brew "tree"
+brew "ncdu"
+brew "wget"
+
+# Git & version control
+brew "git"
+brew "lazygit"
+brew "gh"
+
+# Dev utilities
+brew "make"
+brew "pre-commit"
+brew "shellcheck"
+brew "shfmt"
+
+# System monitoring
+brew "htop"
+brew "bottom"
+
+# Secrets & security
+brew "gnupg"
+brew "age"
+brew "sops"

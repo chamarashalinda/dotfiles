@@ -1,0 +1,25 @@
+# apt_packages.txt — Core Linux packages
+# Used by: modules/packages/install.sh
+# One package per line. Comments are stripped before passing to apt.
+build-essential
+curl
+wget
+git
+make
+unzip
+zip
+tar
+jq
+tmux
+htop
+tree
+ncdu
+direnv
+ripgrep
+fd-find
+fzf
+bat
+zsh
+gpg
+age
+pre-commit

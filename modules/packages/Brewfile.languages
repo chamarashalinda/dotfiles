@@ -1,0 +1,9 @@
+# Brewfile.languages — Language runtimes and tooling
+# Used by: modules/languages/install.sh (macOS)
+
+brew "go"
+brew "rustup"
+brew "pyenv"
+brew "pyenv-virtualenv"
+brew "nvm"
+brew "pipx"

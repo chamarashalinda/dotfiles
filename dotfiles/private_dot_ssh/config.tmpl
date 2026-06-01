@@ -1,0 +1,31 @@
+# private_dot_ssh/config.tmpl — chezmoi template for ~/.ssh/config
+#
+# This file is private (chezmoi sets permissions to 600).
+#
+# Config to implement:
+#
+#   Host *
+#     AddKeysToAgent yes
+#     IdentityFile ~/.ssh/id_ed25519
+#     ServerAliveInterval 60
+#     ServerAliveCountMax 3
+#     HashKnownHosts yes
+#     # ControlMaster for connection multiplexing
+#     ControlMaster auto
+#     ControlPath ~/.ssh/cm-%r@%h:%p
+#     ControlPersist 10m
+#     # Use macOS keychain on macOS
+#     {{ if eq .chezmoi.os "darwin" -}}
+#     UseKeychain yes
+#     {{ end -}}
+#
+#   # Example host entries (uncomment and fill in):
+#   # Host github.com
+#   #   HostName github.com
+#   #   User git
+#   #   IdentityFile ~/.ssh/id_ed25519
+#
+#   # Host work-bastion
+#   #   HostName bastion.example.com
+#   #   User ubuntu
+#   #   IdentityFile ~/.ssh/id_ed25519_work

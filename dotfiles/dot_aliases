@@ -1,0 +1,52 @@
+# dot_aliases — shell aliases
+# Sourced from ~/.zshrc
+#
+# Aliases to implement:
+#
+#   # Modern Unix replacements
+#   alias ls='eza --icons'
+#   alias ll='eza -la --icons --git'
+#   alias lt='eza --tree --icons'
+#   alias cat='bat --style=auto'
+#   alias grep='rg'
+#   alias find='fd'
+#   alias du='dust'
+#   alias top='btm'
+#   alias ps='procs'
+#   alias cd='z'             # zoxide
+#
+#   # Git shortcuts
+#   alias g='git'
+#   alias gs='git status -sb'
+#   alias ga='git add'
+#   alias gc='git commit'
+#   alias gp='git push'
+#   alias gl='git pull --rebase'
+#   alias gd='git diff'
+#   alias lg='lazygit'
+#
+#   # Kubernetes
+#   alias k='kubectl'
+#   alias kx='kubectx'
+#   alias kn='kubens'
+#   alias kgp='kubectl get pods'
+#   alias kgs='kubectl get svc'
+#   alias kgn='kubectl get nodes'
+#
+#   # Docker
+#   alias d='docker'
+#   alias dc='docker compose'
+#   alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+#
+#   # Terraform
+#   alias tf='terraform'
+#   alias tfi='terraform init'
+#   alias tfp='terraform plan'
+#   alias tfa='terraform apply'
+#
+#   # Misc
+#   alias ..='cd ..'
+#   alias ...='cd ../..'
+#   alias mkd='mkdir -p'
+#   alias reload='source ~/.zshrc'
+#   alias path='echo $PATH | tr ":" "\n"'

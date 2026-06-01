@@ -1,0 +1,20 @@
+# Secrets & local overrides
+.env
+.envrc
+*.log
+*.secret
+
+# chezmoi age key (never commit)
+key.txt
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Linux
+*~
+
+# Editor
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,18 @@
+# configs/ghostty/config — Ghostty terminal configuration
+# Installed to: ~/.config/ghostty/config
+#
+# Settings to implement:
+#
+#   font-family = "JetBrainsMono Nerd Font"
+#   font-size = 14
+#   theme = dark     # or a named theme
+#   cursor-style = bar
+#   cursor-style-blink = true
+#   scrollback-limit = 10000
+#   window-padding-x = 8
+#   window-padding-y = 8
+#   macos-option-as-alt = true
+#   copy-on-select = true
+#   shell-integration = zsh
+#
+# See: https://ghostty.org/docs/config

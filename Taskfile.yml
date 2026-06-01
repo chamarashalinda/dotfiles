@@ -1,0 +1,26 @@
+# Taskfile.yml — https://taskfile.dev
+#
+# Mirror of Makefile targets as Taskfile tasks.
+# Vars:
+#   PROFILE: default "sre-platform"
+#   DOTFILES_DIR: default from `pwd`
+#
+# Tasks to implement:
+#   default          → task --list
+#   bootstrap        → preflight + run.sh {{.PROFILE}}
+#   shell            → modules/shell/install.sh
+#   packages         → modules/packages/install.sh
+#   languages        → modules/languages/install.sh
+#   cloud            → modules/cloud/install.sh
+#   git              → modules/git/install.sh
+#   dotfiles         → modules/dotfiles/install.sh
+#   themes           → modules/themes/install.sh
+#   security         → modules/security/install.sh
+#   profile:sre      → bootstrap with PROFILE=sre-platform
+#   profile:backend  → bootstrap with PROFILE=backend-dev
+#   profile:ai       → bootstrap with PROFILE=ai-engineering
+#   profile:minimal  → bootstrap with PROFILE=minimal
+#   verify           → bootstrap/verify.sh
+#   update           → scripts/update.sh
+#   chezmoi:apply    → chezmoi apply --verbose
+#   chezmoi:diff     → chezmoi diff

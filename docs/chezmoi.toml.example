@@ -1,0 +1,18 @@
+# ~/.config/chezmoi/chezmoi.toml
+# Copy this to ~/.config/chezmoi/chezmoi.toml and fill in your values.
+# This file is NEVER committed — it lives only on your machine.
+
+[data]
+  gitName    = "Your Name"
+  gitEmail   = "you@example.com"
+  gpgSign    = false
+  gpgKeyId   = ""             # your GPG key fingerprint if gpgSign = true
+
+# Optional: 1Password secret integration
+# [onepassword]
+#   prompt = false
+
+# Optional: age encryption key for private dotfiles
+# [age]
+#   identity = "~/.config/chezmoi/key.txt"
+#   recipient = "age1..."

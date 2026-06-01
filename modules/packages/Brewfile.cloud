@@ -1,0 +1,18 @@
+# Brewfile.cloud — Cloud & DevOps tooling
+# Used by: modules/packages/install.sh (BREWFILE_EXTRA) and sre-platform profile
+#
+# Note: terraform is intentionally absent — installed via tfenv in modules/cloud/install.sh
+# Note: terragrunt, tflint, argocd, vault are handled by modules/cloud/install.sh
+
+# Container & Kubernetes
+brew "kubernetes-cli"
+brew "kubectx"
+brew "helm"
+brew "k9s"
+brew "stern"
+brew "kustomize"
+cask "docker"
+
+# Cloud providers
+brew "awscli"
+cask "google-cloud-sdk"
