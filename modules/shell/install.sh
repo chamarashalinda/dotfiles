@@ -87,7 +87,7 @@ if command -v chezmoi &>/dev/null; then
 else
   if [[ ! -f "$HOME/.zshrc" ]]; then
     log "Copying .zshrc (chezmoi not available)..."
-    # Strip chezmoi template directives ({{ ... }} lines) — zsh can't parse them.
+    # Drop chezmoi template lines.
     grep -v '^{{.*}}$' "$REPO_ROOT/dotfiles/dot_zshrc.tmpl" > "$HOME/.zshrc"
     done_ ".zshrc copied"
   else

@@ -87,10 +87,9 @@ _check_cmd  "zsh"              zsh       "--version"
 _check_dir  "oh-my-zsh"        "$HOME/.oh-my-zsh"
 _check_file "p10k config"      "$HOME/.p10k.zsh"
 
-# zsh core functions must be resolvable after .zshrc loads. Fails when fpath
-# lost zsh's functions dir (e.g. compinit -i stripping a shared Homebrew).
+# Core zsh functions should still resolve after .zshrc has loaded.
 if command -v zsh &>/dev/null && [[ -f "$HOME/.zshrc" ]]; then
-  # Result goes to a temp file: interactive zsh may print other noise to stdout.
+  # Write to a file; interactive zsh prints session messages to stdout.
   _out="$(mktemp)"
   _VERIFY_OUT="$_out" env -u FPATH zsh -ic 'm=; for f in compinit add-zsh-hook is-at-least; do
       (( $+functions[$f] )) || autoload +X $f 2>/dev/null || m+="$f "

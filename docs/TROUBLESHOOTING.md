@@ -95,20 +95,20 @@ make shell
 
 Usually accompanied by `add-zsh-hook`, `is-at-least` or `vcs_info` "function definition file not found" and `[ERROR]: gitstatus failed to initialize`. All of them mean zsh's core functions directory is missing from `$fpath`.
 
-**Most common cause: a shared Homebrew.** You run as a non-admin user, but Homebrew (and Homebrew's zsh) belongs to an admin account. Running as a separate non-admin user is a supported setup and a good one for isolation. zsh's `compaudit` treats directories owned by another non-root user as insecure, and oh-my-zsh's `compinit -i` removes them from `fpath`. When your zsh is Homebrew's, that includes its core functions directory.
+**Cause:** Homebrew is owned by a different user (for example, you run as a non-admin user and Homebrew belongs to an admin account). `compaudit` treats directories owned by another non-root user as insecure, and oh-my-zsh's `compinit -i` drops them from `fpath`. If zsh itself comes from Homebrew, that includes its core functions directory.
 
-The managed `.zshrc` detects this and sets `ZSH_DISABLE_COMPFIX=true` automatically. It only does so when Homebrew is owned by another non-root user and isn't world-writable. Preflight reports the situation as `Homebrew is owned by '<user>'`, and `make verify` checks that the core functions load. If you still see the errors:
+The `.zshrc` sets `ZSH_DISABLE_COMPFIX=true` in this case, unless Homebrew is world-writable. Preflight warns with `Homebrew is owned by '<user>'`, and `make verify` checks that the core functions load. If the errors persist:
 
 ```bash
 chezmoi apply                # make sure ~/.zshrc is the current template
 exec env -u FPATH zsh        # restart without an inherited FPATH
 ```
 
-Then fully quit and reopen any app that launched the terminal (VS Code, iTerm, and so on). Apps keep the environment they started with, including a stale exported `FPATH`.
+Also restart the app hosting the terminal (VS Code, iTerm, ...), since it may still carry an old exported `FPATH`.
 
-Do **not** "fix" this by giving your user ownership of Homebrew (`chown -R $USER /opt/homebrew`) or adding it to the `admin` group. That would let the non-admin user modify binaries the admin runs, which defeats the isolation. Run `brew install` and `brew upgrade` as the Homebrew owner.
+Don't `chown` the Homebrew prefix to your user or add your user to `admin`; run `brew install` and `brew upgrade` as the Homebrew owner instead.
 
-To check what compaudit objects to (with the fix active):
+To list the directories compaudit flags:
 
 ```bash
 autoload -Uz compaudit && compaudit

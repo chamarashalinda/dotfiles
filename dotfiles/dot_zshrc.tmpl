@@ -5,27 +5,21 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# --- Homebrew (must run before oh-my-zsh so compinit sees brew completions) ---
+# --- Homebrew (before oh-my-zsh, so compinit picks up brew completions) ---
 {{- if eq .chezmoi.os "darwin" }}
-# Apple Silicon Homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
-  # Newer `brew shellenv` runs `export FPATH`. An exported FPATH replaces the
-  # built-in fpath of every child zsh, so a list missing zsh's core functions
-  # dir breaks compinit, add-zsh-hook, etc. Keep fpath local to this shell.
+  # brew shellenv exports FPATH; child shells would inherit it in place of
+  # their default fpath.
   typeset +x FPATH
 fi
 {{- end }}
 
-# --- Shared Homebrew (owned by another, e.g. admin, user) ---
-# Running as a non-admin user while Homebrew belongs to an admin account is a
-# valid setup, but compaudit flags every Homebrew fpath dir as "insecure" and
-# oh-my-zsh's `compinit -i` strips them — including zsh's own core functions
-# dir when zsh is Homebrew's — so compinit/add-zsh-hook/is-at-least vanish.
-# Trusting those dirs grants this user no new access (it already runs that
-# account's binaries), so enable ZSH_DISABLE_COMPFIX in exactly that case.
-# Never when Homebrew is root-owned (already trusted) or world-writable
-# (genuinely unsafe). An explicit ZSH_DISABLE_COMPFIX setting always wins.
+# --- Homebrew owned by another user ---
+# compaudit treats dirs owned by another non-root user as insecure, and
+# `compinit -i` drops them from fpath. With Homebrew's zsh that includes the
+# core functions dir (compinit, add-zsh-hook, ...). Skip the audit in that
+# case, unless the prefix is world-writable or ZSH_DISABLE_COMPFIX is set.
 if [[ -z "${ZSH_DISABLE_COMPFIX:-}" && -n "${HOMEBREW_PREFIX:-}" && -d "$HOMEBREW_PREFIX" && ! -O "$HOMEBREW_PREFIX" ]]; then
   () {
     zmodload -F zsh/stat b:zstat 2>/dev/null || return
@@ -33,8 +27,8 @@ if [[ -z "${ZSH_DISABLE_COMPFIX:-}" && -n "${HOMEBREW_PREFIX:-}" && -d "$HOMEBRE
     local -A st
     for d in "$HOMEBREW_PREFIX" "$HOMEBREW_PREFIX/share"; do
       zstat -H st -- "$d" 2>/dev/null || return
-      (( st[uid] != 0 ))         || return  # root-owned: compaudit accepts it
-      (( !(st[mode] & 8#002) ))  || return  # world-writable: keep the check
+      (( st[uid] != 0 ))         || return  # root-owned
+      (( !(st[mode] & 8#002) ))  || return  # world-writable
     done
     ZSH_DISABLE_COMPFIX=true
   }
