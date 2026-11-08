@@ -87,6 +87,22 @@ _check_cmd  "zsh"              zsh       "--version"
 _check_dir  "oh-my-zsh"        "$HOME/.oh-my-zsh"
 _check_file "p10k config"      "$HOME/.p10k.zsh"
 
+# Core zsh functions should still resolve after .zshrc has loaded.
+if command -v zsh &>/dev/null && [[ -f "$HOME/.zshrc" ]]; then
+  # Write to a file; interactive zsh prints session messages to stdout.
+  _out="$(mktemp)"
+  _VERIFY_OUT="$_out" env -u FPATH zsh -ic 'm=; for f in compinit add-zsh-hook is-at-least; do
+      (( $+functions[$f] )) || autoload +X $f 2>/dev/null || m+="$f "
+    done; print -rn -- "$m" > "$_VERIFY_OUT"' </dev/null &>/dev/null
+  _missing="$(cat "$_out")"; rm -f "$_out"; unset _out
+  if [[ -z "${_missing// }" ]]; then
+    _pass "zsh core functions" "compinit, add-zsh-hook, is-at-least"
+  else
+    _fail "zsh core functions" "not found: ${_missing}— see docs/TROUBLESHOOTING.md"
+  fi
+  unset _missing
+fi
+
 # Check zsh is the default shell
 if [[ "$SHELL" == *"zsh"* ]]; then
   _pass "zsh default shell" "$SHELL"

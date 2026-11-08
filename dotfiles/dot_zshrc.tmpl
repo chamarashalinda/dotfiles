@@ -5,6 +5,35 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# --- Homebrew (before oh-my-zsh, so compinit picks up brew completions) ---
+{{- if eq .chezmoi.os "darwin" }}
+if [[ -f /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  # brew shellenv exports FPATH; child shells would inherit it in place of
+  # their default fpath.
+  typeset +x FPATH
+fi
+{{- end }}
+
+# --- Homebrew owned by another user ---
+# compaudit treats dirs owned by another non-root user as insecure, and
+# `compinit -i` drops them from fpath. With Homebrew's zsh that includes the
+# core functions dir (compinit, add-zsh-hook, ...). Skip the audit in that
+# case, unless the prefix is world-writable or ZSH_DISABLE_COMPFIX is set.
+if [[ -z "${ZSH_DISABLE_COMPFIX:-}" && -n "${HOMEBREW_PREFIX:-}" && -d "$HOMEBREW_PREFIX" && ! -O "$HOMEBREW_PREFIX" ]]; then
+  () {
+    zmodload -F zsh/stat b:zstat 2>/dev/null || return
+    local d
+    local -A st
+    for d in "$HOMEBREW_PREFIX" "$HOMEBREW_PREFIX/share"; do
+      zstat -H st -- "$d" 2>/dev/null || return
+      (( st[uid] != 0 ))         || return  # root-owned
+      (( !(st[mode] & 8#002) ))  || return  # world-writable
+    done
+    ZSH_DISABLE_COMPFIX=true
+  }
+fi
+
 # --- oh-my-zsh ---
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
@@ -64,14 +93,6 @@ fi
 if command -v kubectl &>/dev/null; then
   source <(kubectl completion zsh)
 fi
-
-# --- OS-specific ---
-{{- if eq .chezmoi.os "darwin" }}
-# Apple Silicon Homebrew
-if [[ -f /opt/homebrew/bin/brew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
-{{- end }}
 
 # --- Powerlevel10k config ---
 [[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"

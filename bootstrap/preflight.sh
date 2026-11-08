@@ -71,6 +71,11 @@ fi
 if is_mac; then
   if command -v brew &>/dev/null; then
     _pass "Homebrew $(brew --version | head -1 | awk '{print $2}')"
+    if is_shared_brew; then
+      _warn "Homebrew is owned by '${HOMEBREW_OWNER}', not '$(id -un)' (shared/non-admin setup)"
+      echo -e "       zsh: .zshrc auto-enables ZSH_DISABLE_COMPFIX so completions keep working."
+      echo -e "       brew installs/upgrades will fail as '$(id -un)' — run them as '${HOMEBREW_OWNER}'."
+    fi
   else
     _warn "Homebrew not found — will be installed by the packages module"
   fi
