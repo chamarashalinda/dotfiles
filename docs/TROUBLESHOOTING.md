@@ -91,6 +91,31 @@ make shell
 
 ---
 
+### `compinit: function definition file not found` / `command not found: compdef`
+
+Usually accompanied by `add-zsh-hook`, `is-at-least` or `vcs_info` "function definition file not found" and `[ERROR]: gitstatus failed to initialize`. All of them mean zsh's core functions directory is missing from `$fpath`.
+
+**Most common cause: a shared Homebrew.** You run as a non-admin user, but Homebrew (and Homebrew's zsh) belongs to an admin account. Running as a separate non-admin user is a supported setup and a good one for isolation. zsh's `compaudit` treats directories owned by another non-root user as insecure, and oh-my-zsh's `compinit -i` removes them from `fpath`. When your zsh is Homebrew's, that includes its core functions directory.
+
+The managed `.zshrc` detects this and sets `ZSH_DISABLE_COMPFIX=true` automatically. It only does so when Homebrew is owned by another non-root user and isn't world-writable. Preflight reports the situation as `Homebrew is owned by '<user>'`, and `make verify` checks that the core functions load. If you still see the errors:
+
+```bash
+chezmoi apply                # make sure ~/.zshrc is the current template
+exec env -u FPATH zsh        # restart without an inherited FPATH
+```
+
+Then fully quit and reopen any app that launched the terminal (VS Code, iTerm, and so on). Apps keep the environment they started with, including a stale exported `FPATH`.
+
+Do **not** "fix" this by giving your user ownership of Homebrew (`chown -R $USER /opt/homebrew`) or adding it to the `admin` group. That would let the non-admin user modify binaries the admin runs, which defeats the isolation. Run `brew install` and `brew upgrade` as the Homebrew owner.
+
+To check what compaudit objects to (with the fix active):
+
+```bash
+autoload -Uz compaudit && compaudit
+```
+
+---
+
 ## Languages
 
 ---

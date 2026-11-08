@@ -71,3 +71,17 @@ if [[ "$IS_MAC" == true ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
   fi
 fi
+
+# Shared Homebrew: installed and owned by a different (typically admin) user,
+# while this script runs as a non-admin user. Exports HOMEBREW_OWNER (empty if
+# Homebrew is absent, root-owned, or owned by the current user).
+HOMEBREW_OWNER=""
+if [[ -n "${HOMEBREW_PREFIX:-}" && -d "$HOMEBREW_PREFIX" && ! -O "$HOMEBREW_PREFIX" ]]; then
+  _owner="$(stat -f '%Su' "$HOMEBREW_PREFIX" 2>/dev/null || stat -c '%U' "$HOMEBREW_PREFIX" 2>/dev/null || true)"
+  [[ "$_owner" != "root" ]] && HOMEBREW_OWNER="$_owner"
+  unset _owner
+fi
+export HOMEBREW_OWNER
+
+is_shared_brew() { [[ -n "${HOMEBREW_OWNER:-}" ]]; }
+export -f is_shared_brew
